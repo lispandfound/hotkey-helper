@@ -1,3 +1,5 @@
+(require-extension fmt)
+(use fmt)
 (use srfi-1)
 (use srfi-13)
 ;; Parse sxhkd files and return list of possible keybindings
