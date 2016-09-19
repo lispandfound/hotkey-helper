@@ -1,0 +1,105 @@
+#+TITLE: Hotkey Helper
+
+Hotkey Helper -- Easily document keybindings
+
+* What is it
+Hotkey Helper is a little scheme program that parses =.sxhkdrc= files,
+taking the hotkeys and some specially formatting comments to create a
+documented list associating keybindings with their actions.
+* Installation
+This program requires chicken scheme, and a library called fmt.
+
+Installing chicken scheme should be relatively easily, and likely
+available in the repos of =insert distribution here=.
+
+To install fmt, run =chicken-install -s fmt=.
+* .sxhkdrc Setup
+In order to use the program's functionality, you need to tweak your
+=.sxhkdrc= to include special comments designed as documentation for
+keybindings.
+
+The special syntax for these documentation comments is any line
+beginning with "# ;; ". Set these comments up above every keybinding
+you wish to document.
+
+#+BEGIN_EXAMPLE
+# Example keybinding with documentation
+# ;; Quit bspwm
+super + alt + Escape
+    bspc quit
+# This would show up in the formatted output as:
+# su-alt-Escape                 - Quit bspwm
+#+END_EXAMPLE
+
+* Usage
+To use the program, use =csi= to run the =main.scm= file, like so
+
+#+BEGIN_SRC shell
+csi -ss main.scm
+#+END_SRC
+
+You can also pass a path argument, for the location of your =.sxhkdrc=
+file
+
+#+BEGIN_SRC shell
+csi -ss main.scm /path/to/.sxhkdrc
+#+END_SRC
+
+Upon running this command, you should get a formatted list of hotkeys
+printed to the terminal, something like
+
+#+BEGIN_EXAMPLE
+[~/repos/scm/hotkey-helper] ->>  csi -ss main.scm
+su-Escape                     - Restart sxhkd
+su-alt-Escape                 - Quit bspwm
+su-Delete                     - Suspend
+su-sh-w                       - Show window list
+su-w                          - Close window
+su-b                          - Balance windows
+su-(s|f|t)                    - Make window (float,fullscreen,tiled)
+su-(grave|Tab)                - Goto last (window,desktop)
+su-apostrophe                 - Swap last two window
+Print                         - Take a screenshot
+su-p                          - Open password manager
+su-m                          - Make window biggest
+su-(_|sh-)(h|j|k|l)           - Move window (left,down,up,right)
+su-(_|sh-)bracket(left|right) - Go (forward,backward) a desktop
+su-ct-(h|l)                   - Move window between monitors
+button1                       - Focus window
+su-button(1-3)                - Focus Window
+XF86AudioLowerVolume          - Lower Volume
+XF86AudioRaiseVolume          - Raise Volume
+XF86AudioPlay                 - Play mpd
+XF86AudioNext                 - Next song
+XF86AudioPrev                 - Previous song
+XF86AudioStop                 - Open ncmpcpp
+su-Return                     - Spawn terminal
+su-space                      - Run a command
+su-i                          - Capture notes using org-mode
+su-question                   - Show keybindings
+#+END_EXAMPLE
+
+The output is tabulated (thanks to the fmt library), so all the
+descriptions are neatly aligned and easy on the eyes.
+
+This output can be piped to the likes of dmenu, or rofi.
+
+#+BEGIN_SRC shell
+# An example from my own config.
+# The file has been renamed and moved, but otherwise not changed.
+csi -ss ~/bin/hotkeys.scm | rofi -i -p "Hotkeys: "
+#+END_SRC
+
+Doing this with a program like rofi allows for powerful searching of
+hotkeys on the system.
+* Screenshots
+
+A couple of examples of the program's output being piped to rofi
+
+Basic example:
+
+[[file:screenshots/basic.png]]
+
+Example demonstrating filtering:
+
+[[file:screenshots/filtered.png]]
