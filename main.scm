@@ -82,7 +82,8 @@
          (diff (- (length hotkeys) (length comment-list))))
     (zip hotkeys (append  comment-list (make-list (if (< diff 0) 0 diff) "")))))
 (define (format-output hotkeys )
-  (display (string-join (map (lambda (hotkey) (format "~a -- ~a" (car hotkey) (cadr hotkey))) hotkeys) "\n")))
+  (fmt #t (tabular
+           (dsp (string-join (map car hotkeys) "\n")) " - " (dsp (string-join (map cadr hotkeys) "\n")))))
 (define (main args)
   (format-output (parse-file "/home/jake/.config/sxhkd/sxhkdrc"))
   )
