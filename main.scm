@@ -84,6 +84,9 @@
 (define (format-output hotkeys )
   (fmt #t (tabular
            (dsp (string-join (map car hotkeys) "\n")) " - " (dsp (string-join (map cadr hotkeys) "\n")))))
+(define (sxhkd-default-config)
+  (string-concatenate (list (get-environment-variable "HOME") "/.config/sxhkd/sxhkdrc")))
 (define (main args)
-  (format-output (parse-file "/home/jake/.config/sxhkd/sxhkdrc"))
-  )
+  (format-output (parse-file (if (= (length args) 1)
+                                 (car args)
+                                 (sxhkd-default-config)))))
