@@ -1,0 +1,8 @@
+rule scm
+     command = csc -c $in -o $out
+rule link
+     command = csc $in -o $out
+build parse.o: scm parse.scm
+build main.o: scm main.scm
+build hotkeys: link parse.o main.o 
+      
