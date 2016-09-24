@@ -124,7 +124,7 @@
            ;; Current line is shell command for hotkey
            ((command? cur-line) (let ((commands (map (lambda (c)
                                                        (parse-hotkey (lex-command (string-trim c)))) (take-while command? lines))))
-                                  (loop (drop lines (length commands)) "" '() (cons (list (all-combonations hotkey) comments (map all-combonations commands)) acc))))
+                                  (loop (drop lines (length commands)) "" '() (cons (append (list (all-combonations hotkey) comments  ) (map all-combonations commands)) acc))))
            ;; Current line is documentation
            ((doc? cur-line) (loop (cdr lines) hotkey (cons (all-combonations (parse-hotkey (lex-command (doc-from-comment cur-line)))) comments)  acc))
            ;; Current line is comment
