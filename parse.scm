@@ -145,3 +145,16 @@
   (if (any list? lst) 
       (map string-concatenate (cartesian-product (bundle-list lst)))
       (string-concatenate lst)))
+(define (maybe-list thing)
+  (if (list? thing)
+      thing
+      (list thing)))
+(define (find-hotkey hotkeys string)
+  (let* ((hotkey-equal?  (lambda (x)
+                           (if (string? (car x))
+                               (equal? (car x) string)
+                               (member string (car x)))))
+         (hotkey (find hotkey-equal? hotkeys)))
+    (if hotkey
+        (find hotkey-equal? (zip (maybe-list (car hotkey)) (maybe-list (caddr hotkey))))
+        #f)))
