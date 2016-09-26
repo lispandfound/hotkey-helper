@@ -1,11 +1,7 @@
-(declare (unit parse))
+(declare (unit parse) (uses utils))
 ;; Main parsing engine for sxhkd
 ;; The parse has the capability to produce a set of lists, each list containing a document set, all possible combinations of commands, and all possible combinations of keybindings
-(use srfi-1)
-(use srfi-13)
-(define (firstc string)
-  ;; Get first character
-  (car (string->list string)))
+(use srfi-1 srfi-13)
 ;; The special characters for a command
 (define command-separators '((#\{ . token-open-brace)
                              (#\} . token-closed-brace)
@@ -20,19 +16,13 @@
                      (#\; . token-hotkey-separator)
                      (#\@ . token-key-release)
                      (#\~ . token-key-replay)))
-(define modifiers '("super" "hyper" "meta" "alt" "control" "ctrl" "shift" "mode_switch" "lock" "mod1" "mod2" "mod3" "mod4" "mod5"))
-(define mod-token '(mod-super mod-hyper mod-meta mod-alt mod-control mod-ctrl mod-shift mode-mode_switch mod-lock mod-mod1 mod-mod2 mod-mod3 mod-mod4 mod-mod5))
-(define (generic-str-append thing string)
-  (format "~a~a" string thing))
-(define (generic->string thing)
-  (format "~a" thing))
 (define (tokenize char-bag separators)
   (reverse (foldl (lambda (acc tok)
                     (if (or (not (member tok (map car separators))) )
-                        (if (not (string? (car acc)))
+                        (if (or (null-list? acc) (not (string? (car acc))))
                             (cons (generic->string tok) acc)
                             (cons (generic-str-append tok (car acc)) (cdr acc)))
-                        (cons (cdr (assoc tok separators)) acc))) '("") char-bag)))
+                        (cons (cdr (assoc tok separators)) acc))) '() char-bag)))
 (define (tokenize-hotkey char-bag)
   (tokenize char-bag separators))
 (define (tokenize-command char-bag)
@@ -49,31 +39,10 @@
   MODIFIERS_i := MODIFIER_i1 + MODIFIER_i2 + … + MODIFIER_ik
   |#
   (tokenize-hotkey (string->list line)))
-(define (modifier? token)
-  (member token mod-token))
-(define (modifier->short-string token)
-  (let ((modifier-string (symbol->string token)))
-    (cond
-     ((member token '(mod-mod1 mod-mod2 mod-mod3 mod-mod4 mod-mod5))
-      (generic-string-append "m" (string-ref modifier-string (string-length modifier-string))))
-     ((equal? token 'mod-mode_switch) "ms")
-     ((equal? token 'mod-alt) "alt")
-     (#t (generic->string (substring modifier-string 4 6))))))
-(define (cartesian-product lst)
-  (let ((first (car lst))
-        (rest (cdr lst)))
-    (define (iter l result)
-      (define (prepend-all x)
-        (map (cut cons <> x) l))
-      (concatenate (map prepend-all result)))
-    (map reverse (fold iter (map list first) rest))))
-;; (map (lambda (tok) (if (equal? tok 'token-wildcard) "" tok))
-          ;;      
-
 (define (parse-list tokens)
-  (let ((actual-list (take-while (lambda (tok) (not (equal? tok 'token-closed-brace))) tokens)))
+  (let* ((actual-list (take-while (cut not-equal? 'token-closed-brace <>) tokens)))
     (cons
-     (parse-hotkey (filter (lambda (tok) (not (equal? tok 'token-separator))) actual-list)) (+ (length actual-list) 1))))
+     (parse-hotkey (filter (cut not-equal? 'token-separator <>) actual-list)) (+ (length actual-list) 1))))
 (define (parse-hotkey tokens)
   ;; Interpret an already lexed line
   ;; Returns a list containing every hotkey interpreted
@@ -82,7 +51,6 @@
      (if (> (length tokens) 0)
          (let ((token (car tokens)))
            (cond
-            ((modifier? token) (loop (cons (modifier->short-string token) acc) (cdr tokens)))
             ((equal? token 'token-open-brace) (let* ((tokens (cdr tokens))
                                                      (combonations (parse-list tokens)))
                                                 (loop (cons (car combonations) acc) (drop tokens (cdr combonations)))))
@@ -131,24 +99,7 @@
            ((comment? cur-line) (loop (cdr lines) hotkey comments  acc))
            ;; Current line is hotkey
            (#t (loop (cdr lines) (parse-hotkey (lex-line cur-line)) comments  acc)))))))
-(define (bundle-list lst)
-  (reverse (map (lambda (x)
-                  (if (list? x)
-                      x
-                      (list x)))
-                (foldl (lambda (acc cur)
-                         (cond
-                          ((and (string? cur) (> (length acc) 0) (string? (car acc))) (cons (string-append (car acc) cur) (cdr acc)))
-                          (#t (cons cur acc)))) '() lst))))
-(define (all-combonations lst)
-  ;; get all possible hotkey/command combonations
-  (if (any list? lst) 
-      (map string-concatenate (cartesian-product (bundle-list lst)))
-      (string-concatenate lst)))
-(define (maybe-list thing)
-  (if (list? thing)
-      thing
-      (list thing)))
+
 (define (find-hotkey hotkeys string)
   (let* ((hotkey-equal?  (lambda (x)
                            (if (string? (car x))
