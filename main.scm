@@ -13,8 +13,7 @@
    (lambda ()
      (print "Usage: " (car (argv)) " [options...] [files...]")
      (newline)
-     (print (args:usage opts))
-     (print "Report bugs to zbigniewsz at gmail.")))
+     (print (args:usage opts))))
  (exit 1))
 (define (format-output hotkeys)
   (fmt #t (tabular
@@ -38,6 +37,6 @@
                                     (sxhkd-default-config)))))
       (cond
        ((alist-ref 'print options) (format-output (process-hotkeys hotkeys)))
-       ((alist-ref 'execute options) (execute-hotkey (find-hotkey hotkeys (alist-ref 'execute options))))
+       ((alist-ref 'execute options) (execute-hotkey (find-hotkey hotkeys (string-trim-both (alist-ref 'execute options)))))
        (#t (usage))))))
 (start (command-line-arguments))
