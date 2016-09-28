@@ -35,16 +35,12 @@
 (define list-item
   (any-of ranged-list-item literal-list-item))
 (define list-item*
-  (sequence* ((_ list-sep) (i list-item))
-             (result i)))
+  (preceded-by list-sep list-item))
 (define list-items
   (sequence* ((i list-item) (i* (zero-or-more list-item*)))
-             (result (cons i i*))
-             ) 
-  )
+             (result (cons i i*))))
 (define chain-list
-  (sequence* ((_ open-list) (l list-items) (_ close-list))
-             (result l)))
+  (enclosed-by open-list list-items close-list))
 (define str*
   (sequence chain-list str))
 (define line
@@ -54,11 +50,9 @@
 (define mandatory-whitespace
   (one-or-more (in tabs-and-spaces)))
 (define command
-  (sequence* ((_ mandatory-whitespace) (l line) (_ (maybe nl)))
-             (result l)))
+  (enclosed-by mandatory-whitespace line (maybe nl)))
 (define doc
-  (sequence* ((_ (zero-or-more nl)) (_ (char-seq "# ;; ")) (l line))
-             (result l)))
+  (preceded-by (zero-or-more nl) (char-seq "# ;; ") line))
 (define ordinary-comment
   (sequence* ((_ (zero-or-more nl)) (_ (is #\#)) (_ line))
              (result 'ignore)))
