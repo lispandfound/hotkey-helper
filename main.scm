@@ -23,9 +23,7 @@
 (define (process-hotkey hotkey)
   (let ((command (car hotkey))
         (documentation (cadr hotkey)))
-    (cond
-     ((and (list? command) (list? (car documentation))) (zip command (car documentation)))
-     (#t (cartesian-product (bundle-list (list command documentation)))))))
+    (zip command documentation)))
 (define (process-hotkeys hotkeys)
   (foldl append '() (map process-hotkey hotkeys)))
 (define (execute-hotkey hotkey)

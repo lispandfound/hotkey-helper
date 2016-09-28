@@ -26,9 +26,10 @@
 (define (maybe-list thing)
   ;; Return thing nested in a list if thing is not already a list
   ;; E.g 1 -> '(1), but '(1) -> '(1)
-  (if (list? thing)
-      thing
-      (list thing)))
+  (cond
+   ((and (list? thing) (= (length thing) 1)) (maybe-list (car thing)))
+   ((list? thing) thing)
+   (#t (list thing))))
 (define (merge-strings lst)
   ;; Squish all adjacent string items in a list together
   ;; E.g '("a" 2 "b" "c") -> '("a" 2 "bc")
