@@ -17,8 +17,11 @@ as the build system.
 Installing chicken scheme should be relatively easily, and likely
 available in the repos of =insert distribution here=.
 
-To install the required libraries, run =chicken-install -s fmt shell
-args=.
+To install the required libraries, run the following in your shell
+
+#+BEGIN_SRC shell
+chicken-install -s shell fmt args comparse irregex list-of
+#+END_SRC
 
 After cloning this repo, run ninja in the top level directory, it
 should produce an executable named =hotkeys=. Simply move =hotkeys= to
