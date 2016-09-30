@@ -7,7 +7,7 @@
   (char-set-difference char-set:whitespace (->char-set "\n"))
   )
 (define (char-range lb ub)
-  (map (o generic->string integer->char) (list-of x (x range (char->integer lb) (+ (char->integer ub) 1)))))
+  (map (o ->string integer->char) (list-of x (x range (char->integer lb) (+ (char->integer ub) 1)))))
 ;;; List processing
 (define whitespace
   (zero-or-more (in tabs-and-spaces)))
@@ -70,7 +70,7 @@
                                                      (acc ""))
                                             (if (not (eof-object? x))
                                                 (begin
-                                                  (loop (read-char input-port) (generic-str-append x acc )))
+                                                  (loop (read-char input-port) (string-append  acc (->string x) )))
                                                 acc))))))
 (define (find-hotkey hotkeys string)
   (let* ((hotkey-equal?  (lambda (x)

@@ -1,17 +1,7 @@
 (declare (unit utils))
-;; Various utilities needed for parsing the sxhkd files
-(define (firstc string)
-  ;; Get first character
-  (car (string->list string)))
-(define (not-equal? x y)
-  ;; The "I can't believe Chicken Scheme doesn't have this in the std library" function
-  (not (equal? x y)))
-(define (generic-str-append thing string)
-  ;; Append any two types supported by format together into a string (super helpful!)
-  (format "~a~a" string thing))
-(define (generic->string thing)
-  ;; Generically (according to format) convert thing to a string
-  (format "~a" thing))
+(use data-structures)
+(define not-equal?
+  (complement equal?))
 (define (cartesian-product lst)
   ;; Cool piece of set theory (use this a lot in the parser) that creates all possible combinations of any given lists
   ;; So '((1 2) (2)) -> '((1 2) (2 2)).
@@ -30,13 +20,6 @@
    ((and (list? thing) (= (length thing) 1)) (maybe-list (car thing)))
    ((list? thing) thing)
    (#t (list thing))))
-(define (merge-strings lst)
-  ;; Squish all adjacent string items in a list together
-  ;; E.g '("a" 2 "b" "c") -> '("a" 2 "bc")
-  (reverse (foldl (lambda (acc cur)
-                    (cond
-                     ((and (string? cur) (> (length acc) 0) (string? (car acc))) (cons (string-append (car acc) cur) (cdr acc)))
-                     (#t (cons cur acc)))) '() lst)))
 (define (bundle-list lst)
   ;; Nest every element of a list in a list, if not already in one
   ;; E.g '(1 2 (3)) -> '((1) (2) (3))

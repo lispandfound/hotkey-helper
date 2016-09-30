@@ -17,7 +17,7 @@
  (exit 1))
 (define (format-output hotkeys)
   (fmt #t (tabular
-           (dsp (string-join (map car hotkeys) "\n")) " - " (dsp (string-join (map cadr hotkeys) "\n")))))
+           (dsp (string-join (map cadr hotkeys) "\n")) " - " (dsp (string-join (map car hotkeys) "\n")))))
 (define (sxhkd-default-config)
   (string-concatenate (list (get-environment-variable "HOME") "/.config/sxhkd/sxhkdrc")))
 (define (pad-list list len)
