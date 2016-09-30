@@ -11,7 +11,7 @@
 (define (usage)
  (with-output-to-port (current-error-port)
    (lambda ()
-     (print "Usage: " (car (argv)) " [options...] [files...]")
+     (print "Usage: " (car (argv)) " [options...]")
      (newline)
      (print (args:usage opts))))
  (exit 1))
