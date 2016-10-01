@@ -1,12 +1,13 @@
 #+TITLE: Hotkey Helper
 
-Hotkey Helper -- Easily document keybindings
+Hotkey Helper -- Easily document, and discover sxhkd keybindings
+
+[[https://ipfs.pics/QmTdC3PnD1cEcqVo9cUjwY1PsYdVgRbwtypXTT5z8vC5cp]]
 
 * What is it
 Hotkey Helper is a little scheme program that parses =.sxhkdrc= files,
 taking the hotkeys and some specially formatting comments to create a
 documented list associating keybindings with their actions.
-
 With the latest updates intelligent parsing is added, allowing
 hotkeys to be executed by string (this results in some neat
 applications, which you can see in the usage section).
@@ -173,17 +174,4 @@ earlier.
 hotkeys -e "$(hotkeys -p | rofi -p Hotkeys: -i -dmenu | awk -F- '{print $1}')"
 #+END_SRC
 
-You can see an example of this in the Screenshots section.
-* Screenshots
-
-A couple of examples of the program's output being piped to rofi
-
-Basic example:
-
-[[file:screenshots/basic.png]]
-
-Example demonstrating filtering:
-
-[[file:screenshots/filtered.png]]
-
-Example demonstrating execution of a searched command
+The example gif shows how this script works
