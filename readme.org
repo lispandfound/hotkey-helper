@@ -2,7 +2,7 @@
 
 Hotkey Helper -- Easily document, and discover sxhkd keybindings
 
-[[https://ipfs.pics/QmTdC3PnD1cEcqVo9cUjwY1PsYdVgRbwtypXTT5z8vC5cp]]
+[[https://ipfs.pics/ipfs/QmTdC3PnD1cEcqVo9cUjwY1PsYdVgRbwtypXTT5z8vC5cp]]
 
 * What is it
 Hotkey Helper is a little scheme program that parses =.sxhkdrc= files,
